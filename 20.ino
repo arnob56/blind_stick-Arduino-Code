@@ -1,51 +1,69 @@
-// defines pins numbers
-const int trigPin = 9;
-const int echoPin = 10;
-const int buzzer = 11;
-const int ledPin = 13;
+// Pin definitions
+#define TRIG_PIN 9
+#define ECHO_PIN 10
+#define BUZZER_PIN 8
+#define IR_PIN 7
+#define LED_PIN 6
+#define LDR_PIN A0
 
-// defines variables
 long duration;
 int distance;
-int safetyDistance;
-
 
 void setup() {
-pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-pinMode(buzzer, OUTPUT);
-pinMode(ledPin, OUTPUT);
-Serial.begin(9600); // Starts the serial communication
-}
+  Serial.begin(9600);
 
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(IR_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+}
 
 void loop() {
-// Clears the trigPin
-digitalWrite(trigPin, LOW);
-delayMicroseconds(2);
+  // ----------- Ultrasonic Sensor Reading -----------
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
 
-// Sets the trigPin on HIGH state for 10 micro seconds
-digitalWrite(trigPin, HIGH);
-delayMicroseconds(10);
-digitalWrite(trigPin, LOW);
+  duration = pulseIn(ECHO_PIN, HIGH);
+  distance = duration * 0.034 / 2; // convert to cm
 
-// Reads the echoPin, returns the sound wave travel time in microseconds
-duration = pulseIn(echoPin, HIGH);
+  // ----------- IR Sensor Reading -----------
+  int irValue = digitalRead(IR_PIN);
 
-// Calculating the distance
-distance= duration*0.034/2;
+  // ----------- LDR Reading -----------
+  int ldrValue = analogRead(LDR_PIN);
 
-safetyDistance = distance;
-if (safetyDistance <= 10){
-  digitalWrite(buzzer, HIGH);
-  digitalWrite(ledPin, HIGH);
-}
-else{
-  digitalWrite(buzzer, LOW);
-  digitalWrite(ledPin, LOW);
-}
+  // Debugging values on Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.print(" cm | IR: ");
+  Serial.print(irValue);
+  Serial.print(" | LDR: ");
+  Serial.println(ldrValue);
 
-// Prints the distance on the Serial Monitor
-Serial.print("Distance: ");
-Serial.println(distance);
+  // ----------- Conditions -----------
+  // Ultrasonic obstacle detection (within 30 cm)
+  if (distance > 0 && distance < 30) {
+    digitalWrite(BUZZER_PIN, HIGH);
+    digitalWrite(LED_PIN, HIGH);
+  }
+  // IR obstacle detection
+  else if (irValue == 0) { // IR LOW = obstacle detected
+    digitalWrite(BUZZER_PIN, HIGH);
+    digitalWrite(LED_PIN, HIGH);
+  }
+  else {
+    digitalWrite(BUZZER_PIN, LOW);
+    digitalWrite(LED_PIN, LOW);
+  }
+
+  // Optional: Use LDR for night-time LED indication
+  if (ldrValue < 300) {  // darker environment
+    digitalWrite(LED_PIN, HIGH);
+  }
+
+  delay(200);
 }
