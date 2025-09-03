@@ -1,24 +1,14 @@
-# blind_stick-Arduino-Code
-Components :
-Arduino Unoi R3
-Soanr
-Buzzer
-Jumper wire
-9V DC power battery
-LDR
-IR sensor
-
-
-## Initial build of the connection: 
-
-![IMG_20250903_160636](https://github.com/user-attachments/assets/4b3e7da9-67ef-43cf-b3dc-34953747536e)
-
 
 # Smart Blind Stick – Arduino Uno R3
 
 A **smart blind stick** project built with **Arduino Uno R3** that helps visually impaired users by detecting obstacles and giving feedback using sensors, buzzer, and LED.
 
 ---
+## Initial build of the connection: 
+
+![IMG_20250903_160636](https://github.com/user-attachments/assets/4b3e7da9-67ef-43cf-b3dc-34953747536e)
+
+
 
 ## 🛠 Components Used
 
