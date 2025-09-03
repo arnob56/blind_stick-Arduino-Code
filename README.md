@@ -7,3 +7,6 @@ Jumper wire
 9V DC power battery
 LDR
 IR sensor
+
+
+Initial build of the connection: 
